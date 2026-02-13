@@ -54,11 +54,9 @@ RUN apt-get update \
     file \
     git \
     python3 \
-    python3-is-python3 \
     pkg-config \
     sudo \
     ripgrep \
-    jq \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Homebrew (must run as non-root user)
