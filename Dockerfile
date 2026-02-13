@@ -54,9 +54,11 @@ RUN apt-get update \
     file \
     git \
     python3 \
+    python-is-python3 \
     pkg-config \
     sudo \
     ripgrep \
+    jq \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Homebrew (must run as non-root user)
@@ -93,6 +95,19 @@ COPY --from=openclaw-build /openclaw /openclaw
 # Provide a openclaw executable
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec node /openclaw/dist/entry.js "$@"' > /usr/local/bin/openclaw \
   && chmod +x /usr/local/bin/openclaw
+
+# rg wrapper: strip grep-style flags (-R, -r) that ripgrep doesn't accept
+# (rg is recursive by default; agents sometimes pass grep-style flags)
+RUN mv /usr/bin/rg /usr/bin/rg-real \
+  && printf '%s\n' \
+    '#!/usr/bin/env bash' \
+    'args=()' \
+    'for a in "$@"; do' \
+    '  case "$a" in -R|-r) ;; *) args+=("$a") ;; esac' \
+    'done' \
+    'exec /usr/bin/rg-real "${args[@]}"' \
+    > /usr/local/bin/rg \
+  && chmod +x /usr/local/bin/rg
 
 # Workspace bootstrap files (AGENTS.md, SOUL.md, BOOT.md)
 # Copied to the volume at runtime (only if not already present) by bootstrap.mjs
