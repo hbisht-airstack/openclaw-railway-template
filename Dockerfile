@@ -56,6 +56,7 @@ RUN apt-get update \
     python3 \
     pkg-config \
     sudo \
+    ripgrep \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Homebrew (must run as non-root user)

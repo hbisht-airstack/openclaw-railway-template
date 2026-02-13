@@ -389,8 +389,106 @@ function canAutoOnboard() {
   );
 }
 
-// Telegram welcome is now handled by BOOT.md — the agent sends a personalized
-// greeting via Senpi MCP on startup (no wrapper-side "bot is ready" message).
+/**
+ * Resolve TELEGRAM_USER_ID (numeric or @username) to a numeric chat ID,
+ * then write USER.md into the workspace so the agent and BOOT.md hook know
+ * who the user is and how to reach them on Telegram.
+ *
+ * Must be called BEFORE the gateway starts so we can use getUpdates without
+ * conflicting with the gateway's Telegram poller.
+ */
+async function resolveTelegramAndWriteUserMd() {
+  let chatId = "";
+  let username = "";
+
+  if (!TELEGRAM_BOT_TOKEN) {
+    console.log("[telegram] No TELEGRAM_BOT_TOKEN, skipping USER.md write");
+    return;
+  }
+
+  try {
+    // Verify bot token
+    const meRes = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe`,
+    );
+    const me = await meRes.json();
+    if (!me.ok) {
+      console.error(`[telegram] Invalid bot token: ${me.description}`);
+      return;
+    }
+    console.log(`[telegram] Bot verified: @${me.result.username}`);
+
+    if (TELEGRAM_USER_ID) {
+      if (/^\d+$/.test(TELEGRAM_USER_ID)) {
+        chatId = TELEGRAM_USER_ID;
+        console.log(`[telegram] Using TELEGRAM_USER_ID (numeric): ${chatId}`);
+      } else {
+        // @username — resolve from recent getUpdates
+        username = TELEGRAM_USER_ID.replace(/^@/, "").toLowerCase();
+        const updatesRes = await fetch(
+          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?limit=100`,
+        );
+        const updates = await updatesRes.json();
+        const updateList = (updates.ok && updates.result) || [];
+
+        for (const update of updateList) {
+          const chat = update.message?.chat || update.my_chat_member?.chat;
+          const from = update.message?.from || update.my_chat_member?.from;
+          if (chat?.username?.toLowerCase() === username) {
+            chatId = String(chat.id);
+            break;
+          }
+          if (from?.username?.toLowerCase() === username) {
+            chatId = String(chat?.id || from?.id);
+            break;
+          }
+        }
+
+        if (chatId) {
+          console.log(
+            `[telegram] Resolved @${username} → chat ID ${chatId}`,
+          );
+        } else {
+          console.warn(
+            `[telegram] Could not resolve @${username} — ` +
+              "the user must message the bot first so the chat ID can be discovered.",
+          );
+        }
+      }
+    }
+  } catch (err) {
+    console.error(`[telegram] Error resolving user: ${err.message}`);
+  }
+
+  // Write USER.md with Telegram contact info so BOOT.md can message the user
+  const userMdPath = path.join(WORKSPACE_DIR, "USER.md");
+  const lines = ["# User"];
+  if (chatId) {
+    lines.push("");
+    lines.push(`## Telegram`);
+    lines.push(`- Chat ID: ${chatId}`);
+    if (username) lines.push(`- Username: @${username}`);
+    lines.push("");
+    lines.push(
+      "When sending Telegram messages to this user, " +
+        `use target \`telegram:${chatId}\` (numeric chat ID, not @username).`,
+    );
+  } else if (username) {
+    lines.push("");
+    lines.push(`## Telegram`);
+    lines.push(`- Username: @${username}`);
+    lines.push(`- Chat ID: unknown (user hasn't messaged the bot yet)`);
+    lines.push("");
+    lines.push(
+      "Cannot send Telegram messages until the user messages the bot first.",
+    );
+  }
+  lines.push("");
+
+  fs.mkdirSync(WORKSPACE_DIR, { recursive: true });
+  fs.writeFileSync(userMdPath, lines.join("\n"));
+  console.log(`[telegram] Wrote ${userMdPath}`);
+}
 
 /**
  * Automatically onboard and configure everything from environment variables.
@@ -604,6 +702,10 @@ async function autoOnboard() {
         );
       }
     }
+
+    // --- Resolve Telegram user BEFORE gateway starts ---
+    // (Must happen before gateway claims Telegram polling — only one consumer allowed)
+    await resolveTelegramAndWriteUserMd();
 
     // --- Bootstrap and start gateway ---
     // (Senpi MCP server is configured via mcporter.json in bootstrapOpenClaw(),
@@ -1139,6 +1241,7 @@ app.post("/setup/api/run", requireSetupAuth, async (req, res) => {
           extra += `\n[slack verify] exit=${get.code} (output ${get.output.length} chars)\n${get.output || "(no output)"}`;
         }
       }
+      await resolveTelegramAndWriteUserMd();
       bootstrapOpenClaw();
       // Apply changes immediately.
       await restartGateway();
