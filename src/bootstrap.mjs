@@ -59,6 +59,7 @@ function patchOpenClawJson() {
     agents: {
       defaults: {
         workspace: WORKSPACE_DIR,
+        skipBootstrap: true,
       },
     },
     channels: {

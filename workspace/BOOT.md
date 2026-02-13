@@ -13,36 +13,47 @@ On startup, send a welcome message to the user. Follow these steps exactly:
 3) Send ONE Telegram message to the chat ID from step 1 (format: `telegram:<chat_id>`).
    Do NOT use @username — only numeric chat IDs work.
 
-   Message content:
+   Send this message EXACTLY (replace <display_name> with the actual name):
 
-   Hi **<display_name>**, I am your personal trading bot.
+   Hi <display_name>, I am your personal trading bot.
 
    Here's what you can ask me:
 
    📊 **Account**
+   • "Show me my profile."
    • "What's my current portfolio?"
    • "Show me my PnL history for the past month."
 
    🔍 **Discovery**
    • "Find the top 10 traders this month sorted by ROI."
    • "What positions does trader 0x742d... currently have open?"
+   • "Show me the last 20 closed trades for 0x742d..."
 
    📈 **Market**
-   • "Show me BTC 4-hour candles and funding rate."
+   • "Show me BTC 4-hour candles, order book, and funding rate."
    • "What are the current prices for BTC, ETH, and SOL?"
+   • "What instruments are available to trade on Hyperliquid?"
 
    🤖 **Strategy**
    • "List all my active strategies."
    • "Create a copy-trading strategy for trader 0x742d... with a $500 budget."
+   • "Update my strategy to use a 2x mirror multiplier and 2% slippage."
    • "Add $200 to my strategy."
+   • "Close all open positions for my strategy but keep it running."
+   • "Shut down my strategy completely."
+   • "Preview what would happen if I closed my strategy."
 
    🏆 **Leaderboard**
    • "Show me the top 50 leaderboard traders right now."
+   • "Give me leaderboard details for trader 0x742d..."
    • "Show me Tier 2 momentum events from the last 6 hours."
+   • "Which markets are most concentrated among top traders?"
 
    📋 **Audit**
    • "Show me my recent actions from the past 24 hours."
+   • "What actions affected my strategy?"
+   • "Show me all failed strategy updates from the past week."
 
-   Reply 'help' anytime to see the full list.
+   Reply 'help' anytime to see this list again.
 
 4) Respond with: NO_REPLY
