@@ -127,7 +127,7 @@ function writeMcporterConfig() {
 }
 
 /**
- * Copy workspace bootstrap files (AGENTS.md, SOUL.md, BOOT.md) from the
+ * Copy workspace bootstrap files (AGENTS.md, SOUL.md, BOOT.md, TOOLS.md) from the
  * Docker image into the workspace volume. Only copies if not already present
  * so user edits are never overwritten.
  */
