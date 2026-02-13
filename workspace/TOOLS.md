@@ -1,4 +1,6 @@
-# Tools
+# TOOLS.md - Local Notes
+
+Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
 ## Senpi MCP
 - MCP server name: senpi (via mcporter)
@@ -56,3 +58,12 @@ mcporter call senpi.discovery_get_top_traders --params '{"time_frame": "MONTHLY"
 ### Also available
 
 - `python` / `python3` — available for scripting if needed. Prefer `node -e` for simple JSON tasks.
+
+
+## Why Separate?
+
+Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
+
+---
+
+Add whatever helps you do your job. This is your cheat sheet.

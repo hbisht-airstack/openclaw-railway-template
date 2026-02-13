@@ -147,6 +147,15 @@ export function bootstrapOpenClaw() {
   ensureDir(STATE_DIR);
   ensureDir(WORKSPACE_DIR);
 
+  // Ensure MEMORY.md exists (OpenClaw injects it into sessions; missing = noisy error in chat)
+  const memoryFile = path.join(WORKSPACE_DIR, "MEMORY.md");
+  if (!exists(memoryFile)) {
+    fs.writeFileSync(memoryFile, "# Memory\n\nLong-term context across sessions.\n");
+  }
+
+  // Ensure memory/ directory exists (daily memory logs)
+  ensureDir(path.join(WORKSPACE_DIR, "memory"));
+
   // Copy mcporter skill into persisted state (so OpenClaw loads it naturally)
   ensureDir(STATE_SKILLS_DIR);
   copyDirIfMissing(
