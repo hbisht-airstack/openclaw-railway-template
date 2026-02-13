@@ -46,5 +46,10 @@ mcporter call senpi.discovery_get_top_traders --params '{"time_frame": "MONTHLY"
 ## Shell tools
 
 - `rg` (ripgrep) is available for fast file search. It is recursive by default — do NOT pass `-R` or `-r`.
-- `node` is available for JSON processing. Prefer `node -e` over `jq` or `python`.
+- `node` is available for JSON processing. Use `node -e` for any JSON parsing or data transformation.
 - `grep` is available as a fallback if needed.
+
+### NOT installed (do not use)
+
+- `jq` — NOT available. Use `node -e` instead for JSON processing.
+- `python` / `python3` as a script runner — NOT available for general use. Use `node -e` instead.
