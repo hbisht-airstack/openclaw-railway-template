@@ -4,14 +4,18 @@ On startup, send a welcome message to the user. Follow these steps exactly:
 
 1) Read `USER.md` to get the user's Telegram chat ID.
 
-2) Call `senpi.user_get_me` to get the user's display name.
+2) Get the user's display name by running this shell command:
+   ```
+   mcporter call senpi.user_get_me
+   ```
+   Parse the JSON output to extract the display name.
 
 3) Send ONE Telegram message to the chat ID from step 1 (format: `telegram:<chat_id>`).
    Do NOT use @username — only numeric chat IDs work.
 
    Message content:
 
-   Hi <display_name>, I am your personal trading bot.
+   Hi **<display_name>**, I am your personal trading bot.
 
    Here's what you can ask me:
 
