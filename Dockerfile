@@ -54,7 +54,7 @@ RUN apt-get update \
     file \
     git \
     python3 \
-    python-is-python3 \
+    python3-is-python3 \
     pkg-config \
     sudo \
     ripgrep \
