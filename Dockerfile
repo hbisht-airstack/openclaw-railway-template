@@ -95,9 +95,6 @@ RUN printf '%s\n' '#!/usr/bin/env bash' 'exec node /openclaw/dist/entry.js "$@"'
 
 # Workspace bootstrap files (AGENTS.md, SOUL.md, BOOT.md)
 # Copied to the volume at runtime (only if not already present) by bootstrap.mjs
-COPY /opt/workspace-defaults/AGENTS.md /opt/workspace-defaults/AGENTS.md_old
-COPY /opt/workspace-defaults/SOUL.md /opt/workspace-defaults/SOUL.md_old
-COPY /opt/workspace-defaults/BOOT.md /opt/workspace-defaults/BOOT.md_old
 COPY workspace/AGENTS.md /opt/workspace-defaults/AGENTS.md
 COPY workspace/SOUL.md /opt/workspace-defaults/SOUL.md
 COPY workspace/BOOT.md /opt/workspace-defaults/BOOT.md
