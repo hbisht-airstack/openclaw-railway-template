@@ -69,6 +69,16 @@ function patchOpenClawJson() {
         telegram: { enabled: true },
       },
     },
+    hooks: {
+      internal: {
+        enabled: true,
+        entries: {
+          "boot-md": { enabled: true },
+          "session-memory": { enabled: true },
+          "command-logger": { enabled: true },
+        },
+      },
+    },
   };
 
   const merged = deepMerge(cfg, patch);
