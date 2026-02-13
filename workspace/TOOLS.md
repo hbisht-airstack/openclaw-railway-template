@@ -52,4 +52,7 @@ mcporter call senpi.discovery_get_top_traders --params '{"time_frame": "MONTHLY"
 ### NOT installed (do not use)
 
 - `jq` — NOT available. Use `node -e` instead for JSON processing.
-- `python` / `python3` as a script runner — NOT available for general use. Use `node -e` instead.
+
+### Also available
+
+- `python` / `python3` — available for scripting if needed. Prefer `node -e` for simple JSON tasks.
