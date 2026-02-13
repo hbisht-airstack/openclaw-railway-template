@@ -128,19 +128,28 @@ function writeMcporterConfig() {
 }
 
 /**
- * Copy workspace bootstrap files (AGENTS.md, SOUL.md, BOOT.md, TOOLS.md) from the
- * Docker image into the workspace volume. Only copies if not already present
- * so user edits are never overwritten.
+ * Sync managed workspace prompt files from the image into the persisted volume.
+ * We overwrite these specific files on startup so prompt/rules updates actually
+ * take effect across redeploys even when using a persistent volume.
  */
 const IMAGE_WORKSPACE_DIR = "/opt/workspace-defaults";
+const MANAGED_WORKSPACE_FILES = new Set([
+  "AGENTS.md",
+  "SOUL.md",
+  "BOOT.md",
+  "TOOLS.md",
+]);
 
 function seedWorkspaceFiles() {
   if (!exists(IMAGE_WORKSPACE_DIR)) return;
   for (const name of fs.readdirSync(IMAGE_WORKSPACE_DIR)) {
     const dest = path.join(WORKSPACE_DIR, name);
-    if (!exists(dest)) {
-      fs.cpSync(path.join(IMAGE_WORKSPACE_DIR, name), dest);
+    const src = path.join(IMAGE_WORKSPACE_DIR, name);
+    if (MANAGED_WORKSPACE_FILES.has(name)) {
+      fs.cpSync(src, dest);
+      continue;
     }
+    if (!exists(dest)) fs.cpSync(src, dest);
   }
 }
 
