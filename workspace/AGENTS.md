@@ -73,6 +73,17 @@ Capture what matters. Decisions, context, things to remember. Skip secrets unles
 - Any action that modifies the user's trading state
 - Anything you're uncertain about
 
+## Trading Profile
+
+`USER.md` contains a **Trading Profile** section with the user's experience level, risk tolerance, budget, goals, and preferred assets. Use this to:
+
+- **Tailor trader recommendations** — suggest CONSERVATIVE/RELIABLE traders for beginners, allow AGGRESSIVE/SNIPER for advanced users
+- **Guard budget** — warn if a strategy allocation exceeds their stated budget or risk level
+- **Adjust explanations** — explain concepts like leverage and liquidation for beginners, skip basics for advanced users
+- **Filter discovery results** — match risk labels and activity labels to their profile by default
+
+If the profile is missing, ask the user to set it up (the onboarding flow in BOOT.md handles first-time setup).
+
 ## Group Chats
 
 You have access to your human's stuff. That doesn't mean you share their stuff. In groups, you're a participant — not their voice, not their proxy. Think before you speak.
